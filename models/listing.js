@@ -11,11 +11,11 @@ const listingSchema=new Schema({
     image: {
         filename: {
             type: String,
-            required: true // Make this required if necessary
+            // Make this required if necessary
         },
         url: {
             type: String,
-            required: true // Make this required if necessary
+            // Make this required if necessary
         }
     
 

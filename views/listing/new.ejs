@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wnaderlust</title>
+</head>
+<body>
+    <h1>Add new details to create new Listing</h1>
+    <form method="POST" action="/listings">
+
+        <input type="text" name="listing[title]" placeholder="Enter the title">
+        <br><br>
+        <textarea type="text" name="listing[description]" placeholder="Enter the description"></textarea>
+        <br><br>
+        <input  name="listing[image]" placeholder="Enter image URL / LINK">
+        <br><br>
+        <input type="number" name="listing[price]" placeholder="Enter the price">
+        <br><br>
+        <input type="text" name="listing[country]" placeholder="Enter the country name">
+        <br><br>
+        <input type="text" name="listing[location]" placeholder="Enter location">
+        <br><br>
+
+        <button>Add</button>
+    </form>
+</body>
+</html>
