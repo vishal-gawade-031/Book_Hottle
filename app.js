@@ -57,6 +57,14 @@ app.put("/listings/:id",async (req,res)=>{
    res.redirect(`/listing/${id}`);// this will redirect to show rout
 });
 
+//Delete rout
+
+app.delete("/listings/:id",async (req,res)=>{
+    let {id}=req.params;
+    let deletedListing=await Listing.findByIdAndDelete(id);
+    console.log(deletedListing);
+    res.redirect("/listing");
+})
 
 // rout for create listing kipping upside because it is searching for listing id
 app.get("/listing/new",(req,res)=>{
