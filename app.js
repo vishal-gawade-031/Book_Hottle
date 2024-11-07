@@ -7,6 +7,7 @@ const methodOverride=require("method-override");
 const ejsMate=require("ejs-mate");
 const wrapAsync=require("./utils/WrapAsync.js")
 const ExpressError=require("./utils/ExpressError.js");
+const {listingSchema} = require("./schema.js")
 //connection of database
 const MONGOURL="mongodb://127.0.0.1:27017/Wanderlust";
 
@@ -39,13 +40,15 @@ app.get("/listing",wrapAsync (async (req,res)=>{
 //create rout for add listing
 app.post("/listings",
    wrapAsync(async (req,res)=>{
-    if(!req.body.listing){
-        throw new ExpressError( 400 , "send valid request")
-    }
-     //get all the elements from page
+    // if(!req.body.listing){
+    //     throw new ExpressError( 400 , "send valid request")
+    // }
+    
+    let result=listingSchema.validate(req.body)
+    console.log(result); 
+    //get all the elements from page
      const newListing=new Listing(req.body.listing);
      await newListing.save();
-     // console.log(newListing);
      res.redirect("/listing");
    
 })
@@ -115,8 +118,9 @@ app.all("*", (req, res, next) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
     // Destructure from the error object
-    const { statusCode = 500, message=err.message } = err;
-    res.status(statusCode).send(message);
+    const { statusCode = 500, message="someting went wroung" } = err;
+    // res.status(statusCode).send(message);
+    res.status(500).render("listing/error.ejs",{message});
 });
 
 
