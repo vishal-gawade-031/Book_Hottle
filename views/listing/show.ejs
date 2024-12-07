@@ -5,13 +5,13 @@
 
        </div>
     <!-- it show only one listing -->
-    <h2>Listing details :</h2>
+    <h2><b><%= listing.title %></b></h2>
     <div class="card col-6 offset-3 mt-3 show-card">
         <img src="<%= listing.image.url%>" class="card-img-top show-image" alt="image">
         <div class="card-body">
           <p class="card-text">
 
-            <b><%= listing.title %></b><br>
+            <br>
             <%= listing.description %><br>
             <%= listing.price ? '&#8377;' + listing.price.toLocaleString("en-IN") : 'Price not available' %><br>
             <%= listing.location %><br>
@@ -31,3 +31,24 @@
     
 </div>
 
+<div class="col-8  offset-3 mb-3">
+    <hr>
+    <h4>Leav a review</h4>
+    <form>
+        <div class="mb-3 mt-3">
+            <label for="rating"class="form-lable">Rating</label>
+            <input type="range" min="1" max="5" id="rating" name="review[rating]" class="form-range"/>
+        </div>
+
+        <div class="mb-3 mt-3"><label for="comment form-lable">comments</label>
+                <textarea name="review[comment]" 
+                id="comment"
+                 cols="30"
+                 rows="5"
+                 class="form-control">
+                 
+                </textarea>
+        </div>
+        <button class="btn btn-outline-dark">submit</button>
+    </form>
+</div>

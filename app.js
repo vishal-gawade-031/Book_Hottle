@@ -30,6 +30,18 @@ app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
 
 
+//define middleware function
+const validateListing = (req,res,next)=>{
+
+    let {error}=listingSchema.validate(req.body)
+       if(error){
+        let errmsg=error.details.map((e)=> el.message).join(",");
+        throw new ExpressError( 400 , errmsg)
+    }
+    else{
+        next();
+    }
+}
 
 // Index routfor show all the data keep it up because it will search for id 
 app.get("/listing",wrapAsync (async (req,res)=>{
@@ -38,14 +50,9 @@ app.get("/listing",wrapAsync (async (req,res)=>{
 }));
 
 //create rout for add listing
-app.post("/listings",
+app.post("/listings",validateListing,
    wrapAsync(async (req,res)=>{
-    // if(!req.body.listing){
-    //     throw new ExpressError( 400 , "send valid request")
-    // }
-    
-    let result=listingSchema.validate(req.body)
-    console.log(result); 
+
     //get all the elements from page
      const newListing=new Listing(req.body.listing);
      await newListing.save();
@@ -64,7 +71,7 @@ app.get("/listing/:id/edit",wrapAsync (async(req,res)=>{
 }));
 
 //update rout 
-app.put("/listings/:id",wrapAsync(async (req,res)=>{
+app.put("/listings/:id",validateListing,wrapAsync(async (req,res)=>{
     let {id}=req.params;
     //pass listing to db for update
    await Listing.findByIdAndUpdate(id,{... req.body.listing});
