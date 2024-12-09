@@ -8,6 +8,7 @@ const ejsMate=require("ejs-mate");
 const wrapAsync=require("./utils/WrapAsync.js")
 const ExpressError=require("./utils/ExpressError.js");
 const {listingSchema} = require("./schema.js")
+const Review= require("./models/reviews.js");
 //connection of database
 const MONGOURL="mongodb://127.0.0.1:27017/Wanderlust";
 
@@ -101,7 +102,21 @@ app.get("/listing/:id",wrapAsync(async (req,res)=>{
     res.render("listing/show.ejs",{listing});
 }));
 
+//reviews post rout
+app.post("/listings/:id/reviews",async (req,res)=>{ 
+let listing=await Listing.findById(req.params.id);
 
+//comments and rating will come from show ejs name 
+let newReview= new Review(req.body.review);
+listing.review.push(newReview);
+
+await newReview.save();
+await listing.save();
+
+console.log(`/listing/${listing._id}`);
+res.redirect(`/listing/${listing._id}`);
+
+})
 
 //insert the data
 // app.get("/testListing",async (req,res)=>{
