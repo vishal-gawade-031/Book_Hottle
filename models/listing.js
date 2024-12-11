@@ -36,9 +36,16 @@ const listingSchema=new Schema({
     review:[{
         type:Schema.Types.ObjectId,
         ref:"Review",
-    }],
+    },
+],
 }
-)
+);
+//mongose middleware
+listingSchema.post("findOneAndDelete",async(listing)=>{
+if(listing){
+    await Review.deleteMany({_id : {$in : listing.reviews}});
+}
+})
 
 const Listing=mongoose.model("Listing",listingSchema);
 module.exports=Listing;

@@ -7,7 +7,7 @@ const methodOverride=require("method-override");
 const ejsMate=require("ejs-mate");
 const wrapAsync=require("./utils/WrapAsync.js")
 const ExpressError=require("./utils/ExpressError.js");
-const {listingSchema} = require("./schema.js")
+const {listingSchema,reviewSchema} = require("./schema.js")
 const Review= require("./models/reviews.js");
 //connection of database
 const MONGOURL="mongodb://127.0.0.1:27017/Wanderlust";
@@ -35,6 +35,18 @@ app.use(express.static(path.join(__dirname,"/public")));
 const validateListing = (req,res,next)=>{
 
     let {error}=listingSchema.validate(req.body)
+       if(error){
+        let errmsg=error.details.map((e)=> el.message).join(",");
+        throw new ExpressError( 400 , errmsg)
+    }
+    else{
+        next();
+    }
+}
+//validateReview middleware functions
+const validateReview = (req,res,next)=>{
+
+    let {error}=reviewSchema.validate(req.body)
        if(error){
         let errmsg=error.details.map((e)=> el.message).join(",");
         throw new ExpressError( 400 , errmsg)
@@ -97,13 +109,15 @@ app.get("/listing/new",wrapAsync((req,res)=>{
 //it will find the id and return the document
 app.get("/listing/:id",wrapAsync(async (req,res)=>{
     let {id}=req.params;
-    const listing=await Listing.findById(id);
-    // console.log(listing);
+    
+    const listing = await Listing.findById(id);
+    console.log(listing);
     res.render("listing/show.ejs",{listing});
 }));
 
 //reviews post rout
-app.post("/listings/:id/reviews",async (req,res)=>{ 
+
+app.post("/listings/:id/reviews", validateReview, wrapAsync (async (req,res)=>{ 
 let listing=await Listing.findById(req.params.id);
 
 //comments and rating will come from show ejs name 
@@ -116,7 +130,16 @@ await listing.save();
 console.log(`/listing/${listing._id}`);
 res.redirect(`/listing/${listing._id}`);
 
-})
+}));
+
+//delete review
+
+app.post("/listing/:id/reviews/reviewId",wrapAsync (async (req,res)=>{
+        let {id,reviewId}=req.params;
+        await Listing.findByIdAndUpdate(id,{$pull:{reviews:reviewId}});
+       await Review.findById(reviewId);
+       res.redirect(`/listing${id}`);
+}));
 
 //insert the data
 // app.get("/testListing",async (req,res)=>{
