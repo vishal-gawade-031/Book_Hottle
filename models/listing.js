@@ -16,7 +16,7 @@ const listingSchema=new Schema({
         },
         url: {
             type: String,
-            // Make this required if necessary
+          
         }
     
 
@@ -33,7 +33,8 @@ const listingSchema=new Schema({
     },
     country:{
         type:String,
-        required:true,
+        default:"india"
+       
     },
     reviews:[{
         type:Schema.Types.ObjectId,

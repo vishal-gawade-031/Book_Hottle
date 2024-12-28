@@ -5,7 +5,7 @@ const mongoose=require("mongoose");
 const path = require("path");
 const methodOverride=require("method-override");
 const ejsMate=require("ejs-mate");
-
+const session=require("express-session");
 const ExpressError=require("./utils/ExpressError.js");
 //restructur
 const listings = require("./routes/listing.js");
@@ -33,6 +33,17 @@ app.use(express.static(path.join(__dirname,"/public")));
 //restructuring
 app.use("/listings", listings);
 app.use("/listings/:id/reviews",reviews);
+
+// const sessionOptions ={
+//     secret:"mysuperscretcode",
+//     resave:false,
+//     saveUnintializad:true,
+//     cookies:{
+//         expires:Date.now() + 7 * 24 * 60 * 60 * 1000,
+//         MaxAge: 7* 24 * 60 * 60 * 1000
+//     }
+// };
+// app.use(session,(sessionOptions));
 
 app.get("/",(req,res)=>{
     res.send("I am root");

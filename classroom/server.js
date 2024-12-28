@@ -17,20 +17,31 @@ app.use(flash());
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
 
+//middleware
+app.use((req,res,next)=>{
+    res.locals.successMsg =req.flash("success");
+    res.locals.errorMsg = req.flash("error");
+    next();
+})
+
 //register
 app.get("/register",(req,res)=>{
     let {name="anoumas"}=req.query;
     req.session.name=name;
-    console.log(req.session);
-    //succes is the key 
-    req.flash("success","user register succesfully");
+     if(name == "anoumas"){
+        req.flash("error","user not register");
+     }
+     else{
+        req.flash("success","user register succesfully");
+     }
     res.redirect("/hello");
 })
 
 app.get("/hello",(req,res)=>{
-    console.log(req.flash("succes"));
+
+    //better way to access this is middleware
     //print the value of success
-    res.render("page.ejs",{name:req.session.name,msg: req.flash("success")});
+    res.render("page.ejs",{name:req.session.name});
 })
 
 

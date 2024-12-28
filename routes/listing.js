@@ -29,7 +29,7 @@ router.get("/",wrapAsync (async (req,res)=>{
 
 //create rout 
 //for add listing
-router.post("/",validateListing,
+router.post("/",
    wrapAsync(async (req,res)=>{
 
     //get all the elements from page
