@@ -35,6 +35,7 @@ router.post("/",
     //get all the elements from page
      const newListing=new Listing(req.body.listing);
      await newListing.save();
+     req.flash("success","new listing created");
      res.redirect("/listings");
    
 })
@@ -46,8 +47,13 @@ router.get("/:id/edit",wrapAsync (async(req,res)=>{
     let {id}=req.params;
     // console.log(id);
     const listing=await Listing.findById(id);//it return the document from DB
-    // console.log(listing);
+    if(!listing){
+        req.flash("error","requested Listing does not exits");
+        res.redirect("/listings");
+    }
+   else{
     res.render("listing/edit.ejs",{listing});
+   }
 }));
 
 //update rout 
@@ -56,6 +62,7 @@ router.put("/:id",wrapAsync(async (req,res)=>{
     //pass listing to db for update
     console.log(id);
    await Listing.findByIdAndUpdate(id,{... req.body.listing});
+   req.flash("success"," listing updated");
    res.redirect(`/listings/${id}`);// this will redirect to show rout
 }));
 
@@ -65,13 +72,13 @@ router.put("/:id",wrapAsync(async (req,res)=>{
 router.delete("/:id",wrapAsync(async (req,res)=>{
     let {id}=req.params;
     let deletedListing=await Listing.findByIdAndDelete(id);
-    console.log(deletedListing);
+    req.flash("success","Deleted listing");
     res.redirect("/listings");
 }));
 
 // rout for create listing kipping upside because it is searching for listing id
 //creat rout
-router.get("/new",wrapAsync((req,res)=>{
+router.get("/new",((req,res)=>{
     res.render("listing/new.ejs");
 }));
 
@@ -82,7 +89,13 @@ router.get("/:id",wrapAsync(async (req,res)=>{
     let {id}=req.params;
     
     const listing = await Listing.findById(id).populate("reviews");
+    if(!listing){
+        req.flash("error","requested Listing does not exits");
+        res.redirect("/listings");
+    }
+    else{
     res.render("listing/show.ejs",{listing});
+    }
 }));
 
 module.exports= router;

@@ -7,6 +7,7 @@ const methodOverride=require("method-override");
 const ejsMate=require("ejs-mate");
 const session=require("express-session");
 const ExpressError=require("./utils/ExpressError.js");
+const flash=require("connect-flash");
 //restructur
 const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js");
@@ -30,24 +31,35 @@ app.use(express.urlencoded({extended:true}));
 app.use(methodOverride("_method")); 
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
-//restructuring
-app.use("/listings", listings);
-app.use("/listings/:id/reviews",reviews);
 
-// const sessionOptions ={
-//     secret:"mysuperscretcode",
-//     resave:false,
-//     saveUnintializad:true,
-//     cookies:{
-//         expires:Date.now() + 7 * 24 * 60 * 60 * 1000,
-//         MaxAge: 7* 24 * 60 * 60 * 1000
-//     }
-// };
-// app.use(session,(sessionOptions));
+
+const sessionOptions ={
+    secret:"mysuperscretcode",
+    resave:false,
+    saveUnintializad:true,
+    cookies:{
+        expires:Date.now() + 7 * 24 * 60 * 60 * 1000,
+        MaxAge: 7* 24 * 60 * 60 * 1000
+    }
+};
 
 app.get("/",(req,res)=>{
     res.send("I am root");
 });
+app.use(session(sessionOptions));
+app.use(flash())
+
+//middleware
+app.use((req,res,next)=>{
+    //the success msg will store in locals variable
+res.locals.success=req.flash("success");
+res.locals.error=req.flash("error")
+next();
+})
+//restructuring
+app.use("/listings", listings);
+app.use("/listings/:id/reviews",reviews);
+
 
 // if any rout does't match 
 // Catch-all for unmatched routes
@@ -62,12 +74,6 @@ app.use((err, req, res, next) => {
     // res.status(statusCode).send(message);
     res.status(500).render("listing/error.ejs",{message});
 });
-
-
-//just call the rout  
-app.get("/",(req,res)=>{
-    res.render("listing/home.ejs");
-})
 
 app.listen(8080 ,()=>{
     console.log("the server is listen to port 8080");
