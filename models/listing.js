@@ -16,8 +16,7 @@ const listingSchema=new Schema({
         },
         url: {
             type: String,
-          
-        }
+                }
     
 
          // Fixed typo from `require` to `required`
@@ -39,8 +38,12 @@ const listingSchema=new Schema({
     reviews:[{
         type:Schema.Types.ObjectId,
         ref:"Review",
-    }]
-})
+    }],
+    owner:{
+        type:Schema.Types.ObjectId,
+        ref:"User",
+    }
+});
 
 //middleware that delete the review in db if listing is delete
  listingSchema.post("findOneAndDelete",async (listing)=>{
