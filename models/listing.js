@@ -10,14 +10,8 @@ const listingSchema=new Schema({
     },
     description:String,
     image: {
-        filename: {
-            type: String,
-            // Make this required if necessary
-        },
-        url: {
-            type: String,
-                }
-    
+      url:String,
+      filename:String,   
 
          // Fixed typo from `require` to `required`
         // default: "https://unsplash.com/photos/a-waterfall-with-a-mountain-in-the-background-MRbfimmEUU8",

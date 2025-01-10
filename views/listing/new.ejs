@@ -5,7 +5,10 @@
         <br><br>
 
     <h1>Create new listing</h1>
-    <form method="POST" action="/listings"novalidate class="needs-validation">
+    <form method="POST" action="/listings"
+    novalidate class="needs-validation" 
+    enctype="multipart/form-data">
+
         <div class="mb-2"> <label for="title" class="form-lable">Title</label>
         <input type="text"
          name="listing[title]"
@@ -27,8 +30,8 @@
         </div>
 
         <div class="mb-2">
-            <label for="image">Image link</label>
-        <input  name="listing[image]" placeholder="Enter image URL / LINK"class="form-control">
+            <label for="image">Upload Image</label>
+        <input  name="listing[image]" type="file" class="form-control">
         </div>
 
         <div class="row">

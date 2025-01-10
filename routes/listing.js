@@ -6,100 +6,44 @@ const {listingSchema} = require("../schema.js");
 const Listing= require("../models/listing.js");
 const {isLoggedId , isOwner,validateListing}=require("../middleware.js");
 
-// Index routfor //
-// show all the data keep it up because it will search for id 
-router.get("/",wrapAsync (async (req,res)=>{
-    const allListing=await Listing.find({});
-    res.render("listing/index.ejs",{allListing}); 
-}));
-
-//create rout 
+const listingController = require("../controllers/listing.js");
+const multer  = require('multer')
+const {storage}=require("../cloudConfig.js")
+const upload = multer({ storage })
+// double router
+router
+.route("/")
+// Index routfor 
+.get(wrapAsync (listingController.index))
 //for add listing
-router.post("/",isLoggedId,
-   wrapAsync(async (req,res)=>{
-
-    //get all the elements from page
-     const newListing=new Listing(req.body.listing);
-     newListing.owner=req.user._id;
-     await newListing.save();
-     req.flash("success","new listing created");
-     res.redirect("/listings");
-   
-})
+.post(isLoggedId ,upload.single('listing[image]')
+,wrapAsync(listingController.createListing)
 );
+
+//creat rout
+router.get("/new",isLoggedId,(listingController.renderNewForm));
+
+router
+.route("/:id")
+.get(wrapAsync(listingController.showListing))
+//update rout
+.put(
+    isLoggedId,
+    isOwner, 
+    wrapAsync(listingController.updateListing))
+
+.delete(
+        isLoggedId,
+        isOwner,
+        wrapAsync(listingController.destroy))
+    
 
 // with the link default get req will come 
 //edit rout
 router.get("/:id/edit",
     isLoggedId,
     isOwner,
-    wrapAsync (async(req,res)=>{
-    let {id}=req.params;
-    // console.log(id);
-    const listing=await Listing.findById(id);//it return the document from DB
-    if(!listing){
-        req.flash("error","requested Listing does not exits");
-        res.redirect("/listings");
-    }
-   else{
-    res.render("listing/edit.ejs",{listing});
-   }
-}));
+    wrapAsync (listingController.renderEditForm));
 
-//update rout 
-router.put("/:id",
-    isLoggedId,
-    isOwner, 
-    wrapAsync(async (req,res)=>{
-    let {id}=req.params;
-    let listing = await Listing.findById(id);
-    //pass listing to db for update
-   await Listing.findByIdAndUpdate(id,{... req.body.listing});
-   req.flash("success"," listing updated");
-   res.redirect(`/listings/${id}`);// this will redirect to show rout
-}));
-
-
-//Delete rout
-
-router.delete("/:id",
-    isLoggedId,
-    isOwner,
-    wrapAsync(async (req,res)=>{
-    let {id}=req.params;
-    let deletedListing=await Listing.findByIdAndDelete(id);
-    req.flash("success","Deleted listing");
-    res.redirect("/listings");
-}));
-
-// rout for create listing kipping upside because it is searching for listing id
-//creat rout
-router.get("/new",isLoggedId,((req,res)=>{
-    res.render("listing/new.ejs");
-}));
-
-
-//it will find the id and return the document
-//show rout
-router.get("/:id",wrapAsync(async (req,res)=>{
-    let {id}=req.params;
+    module.exports= router;
     
-    const listing = await Listing.findById(id)
-    .populate({path:"reviews",
-                populate:{
-                    path:"author",
-                },
-            })
-    .populate("owner");
-    if(!listing){
-        req.flash("error","requested Listing does not exits");
-        res.redirect("/listings");
-    }
-    else{
-    res.render("listing/show.ejs",{listing});
-    }
-}));
-
-
-
-module.exports= router;

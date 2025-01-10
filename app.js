@@ -1,7 +1,10 @@
+if(process.env.NODE_ENV != "production"){
+    require('dotenv').config()
+}
+
 const express=require("express");
 const app=express();
 const mongoose=require("mongoose");
-
 const path = require("path");
 const methodOverride=require("method-override");
 const ejsMate=require("ejs-mate");
@@ -96,6 +99,7 @@ app.all("*", (req, res, next) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
     // Destructure from the error object
+
     const { statusCode = 500, message="someting went wroung" } = err;
     // res.status(statusCode).send(message);
     res.status(500).render("listing/error.ejs",{message});
