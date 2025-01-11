@@ -4,7 +4,10 @@
         <div class="col-8 offset-2">
     <h1>Add new details to Edit Listing</h1>
     <!-- convert the post request into put with install the method override package -->
-    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" >
+    <form
+     method="POST"
+     action="/listings/<%= listing._id %>?_method=PUT"
+     enctype="multipart/form-data" >
 
         <!-- display the information from DB -->
           
@@ -18,9 +21,15 @@
             <label for="description"class="from-lable ">description</label>
         <textarea type="text" name="listing[description]" class="form-control"><%= listing.description %> </textarea>
         </div>
+        
         <div class="mb-3">
-            <label for="image"class="from-lable">image</label>
-        <!-- <input  name="listing[image]" value="<%#=listing.image.url %>"class="form-control"> -->
+            original Listing Image <br>
+            <img src="<%=originalImageUrl%>" alt="old image ">
+        </div>
+
+        <div class="mb-3">
+            <label for="image"class="from-lable">Upload new image</label>
+        <input  name="listing[image]" type="file"  class="form-control">
         </div>
 
         <div class="row">

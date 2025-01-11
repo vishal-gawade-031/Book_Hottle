@@ -50,6 +50,13 @@ module.exports.updateListing= async (req,res)=>{
     let listing = await Listing.findById(id);
     //pass listing to db for update
    await Listing.findByIdAndUpdate(id,{... req.body.listing});
+   
+   if(typeof req.file !== "undefined"){
+   let url=req.path;
+   let filename=req.file.filename;
+   listing.image ={url,filename};
+   await listing.save();
+   }
    req.flash("success"," listing updated");
    res.redirect(`/listings/${id}`);// this will redirect to show rout
 }
@@ -60,11 +67,13 @@ module.exports.renderEditForm =async(req,res)=>{
     const listing=await Listing.findById(id);//it return the document from DB
     if(!listing){
         req.flash("error","requested Listing does not exits");
-        res.redirect("/listings");
+       return res.redirect("/listings");
     }
-   else{
-    res.render("listing/edit.ejs",{listing});
-   }
+    
+    let originalImageUrl=listing.image.url;
+     originalImageUrl= originalImageUrl.replace("/upload","/upload/,w_250");
+    res.render("listing/edit.ejs",{listing,originalImageUrl});
+   
 }
 
 //delete rout
