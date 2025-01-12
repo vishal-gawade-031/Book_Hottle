@@ -1,3 +1,22 @@
+<style>
+  .btn-search{
+    background-color: #fe424f;
+    color: whitesmoke;
+    font-weight: 600;
+  }
+  .btn-search:hover{
+    background-color: #fe424f;
+    color: whitesmoke;
+    font-weight: 600;
+    
+  }
+  .btn-search{
+    text-transform: lowercase !important;
+  }
+  .fa-magnifying-glass{
+    margin-left: 13px !important;
+  }
+</style>
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
     <div class="container-fluid">
       <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
@@ -8,9 +27,16 @@
       
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
           <a class="nav-link" href="/listings">Exploar</a>
+          </div>
+          <div class="navbar-nav ms-auto">
+            <form class="d-flex" role="search">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-search mr-2 fa-solid fa-magnifying-glass">Search</button>
+            </form>
           </div>
           <div class="navbar-nav ms-auto">
           <a class="nav-link" href="/listings/new">Air bnb your home</a>
